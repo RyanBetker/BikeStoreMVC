@@ -17,14 +17,6 @@ namespace BikeStore
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
-            using (var context = new BikeStoreContext())
-            {
-                if (context.Brands.Any() == false)
-                {
-                    context.Brands.Add(new Models.Brand() { BrandName = "Trek", CreatedBy = "Ryan Betker", CreatedDate = DateTime.Now });
-                    context.SaveChanges(); 
-                }
-            }
         }
     }
 }
