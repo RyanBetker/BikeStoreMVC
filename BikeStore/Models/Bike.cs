@@ -42,7 +42,10 @@ namespace BikeStore.Models
 
         public string Color { get; set; }
 
-        public string BrandName { get; set; }
+        public int BrandID { get; set; }
+
+        [ForeignKey("BrandID")]
+        public Brand Brand { get; set; }
 
     }
 }

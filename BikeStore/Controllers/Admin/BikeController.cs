@@ -47,7 +47,7 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,BrandName,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Bike bike)
+        public ActionResult Create([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,Brand,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Bike bike)
         {
             if (ModelState.IsValid)
             {
