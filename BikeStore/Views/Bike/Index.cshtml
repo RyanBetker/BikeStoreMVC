@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<BikeStore.Models.Bike>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Bike Admin Area";
 }
 
-<h2>Index</h2>
+<h2>Bike Admin Area</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New Bike", "Create")
 </p>
 <table class="table">
     <tr>
@@ -27,7 +27,7 @@
             @Html.DisplayNameFor(model => model.Color)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.BrandName)
+            BrandName
         </th>
         <th>
             @Html.DisplayNameFor(model => model.CreatedBy)
@@ -62,7 +62,7 @@
             @Html.DisplayFor(modelItem => item.Color)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.BrandName)
+            @Html.DisplayFor(modelItem => item.Brand.BrandName)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.CreatedBy)
