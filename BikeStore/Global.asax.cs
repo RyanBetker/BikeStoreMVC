@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BikeStore.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,6 +17,13 @@ namespace BikeStore
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            InitializeMappings();
+            new BikeStore.Migrations.Configuration().SeedFromExternal(new BikeStoreCustomContext());
+        }
+
+        private void InitializeMappings()
+        {
+            AutoMapper.Mapper.CreateMap<BikeViewModel, Models.Bike>();
 
         }
     }

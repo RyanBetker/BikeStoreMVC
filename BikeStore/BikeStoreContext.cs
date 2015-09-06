@@ -2,8 +2,36 @@ namespace BikeStore
 {
     using System;
     using System.Data.Entity;
+    using System.Data.Entity.Validation;
+    using System.Diagnostics;
     using System.Linq;
 
+    public class BikeStoreCustomContext : BikeStoreContext
+    {
+        public override int SaveChanges()
+        {
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                foreach (var validationError in ex.EntityValidationErrors)
+                {
+                    Trace.WriteLine(String.Format("Error(s) with entity {0}", validationError.Entry.Entity.GetType().Name));
+
+                    foreach (var error in validationError.ValidationErrors)
+                    {
+                        Trace.WriteLine(String.Format("{0}, bad value: {1}. Error Message: {2}", error.PropertyName,
+                            validationError.Entry.CurrentValues.GetValue<object>(error.PropertyName),
+                            error.ErrorMessage));
+
+                    }
+                }
+                throw;
+            }
+        }
+    }
     public class BikeStoreContext : DbContext
     {
         // Your context has been configured to use a 'Model1' connection string from your application's 
