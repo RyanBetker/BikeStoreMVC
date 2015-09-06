@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BikeStore.Models.Bike>
+﻿@model IEnumerable<BikeStore.ViewModels.BikeViewModel>
 
 @{
     ViewBag.Title = "Bike Admin Area";
@@ -27,7 +27,7 @@
             @Html.DisplayNameFor(model => model.Color)
         </th>
         <th>
-            BrandName
+            @Html.DisplayNameFor(model => model.BrandName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.CreatedBy)
@@ -62,7 +62,7 @@
             @Html.DisplayFor(modelItem => item.Color)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Brand.BrandName)
+            @Html.DisplayFor(modelItem => item.BrandName)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.CreatedBy)

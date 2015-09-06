@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using BikeStore;
 using BikeStore.Models;
+using BikeStore.ViewModels;
 
 namespace BikeStore.Controllers.Admin
 {
@@ -18,7 +19,10 @@ namespace BikeStore.Controllers.Admin
         // GET: Bike
         public ActionResult Index()
         {
-            return View(db.Bikes.ToList());
+            var bikesList = db.Bikes.ToList();
+            var bikeViewModels = AutoMapper.Mapper.Map<IList<Bike>, IList<BikeViewModel>>(bikesList);
+            
+            return View(bikeViewModels);
         }
 
         // GET: Bike/Details/5
@@ -28,12 +32,12 @@ namespace BikeStore.Controllers.Admin
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bike bike = db.Bikes.Find(id);
-            if (bike == null)
+            BikeViewModel bikeViewModel = AutoMapper.Mapper.Map<BikeViewModel>(db.Bikes.Find(id));
+            if (bikeViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(bike);
+            return View(bikeViewModel);
         }
 
         // GET: Bike/Create
@@ -47,16 +51,36 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,Brand,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Bike bike)
+        public ActionResult Create([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,Brand,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] BikeViewModel bike)
         {
             if (ModelState.IsValid)
             {
-                db.Bikes.Add(bike);
+                
+                Bike bikeData = AutoMapper.Mapper.Map<Bike>(bike);
+
+                AddBrandIfNotPresent(bike);
+                db.Bikes.Add(bikeData);
                 db.SaveChanges();
+              
                 return RedirectToAction("Index");
             }
 
             return View(bike);
+        }
+
+        private void AddBrandIfNotPresent(BikeViewModel bike)
+        {
+            if (db.Brands.Any(b => b.BrandName == bike.BrandName) == false)
+            {
+                db.Brands.Add(
+                    new Brand()
+                    {
+                        BrandName = bike.BrandName,
+                        CreatedBy = User.Identity.Name,
+                        CreatedDate = DateTime.Now
+                    });
+
+            }
         }
 
         // GET: Bike/Edit/5
@@ -66,12 +90,12 @@ namespace BikeStore.Controllers.Admin
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bike bike = db.Bikes.Find(id);
-            if (bike == null)
+            BikeViewModel bikeViewModel = AutoMapper.Mapper.Map < BikeViewModel > (db.Bikes.Find(id));
+            if (bikeViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(bike);
+            return View(bikeViewModel);
         }
 
         // POST: Bike/Edit/5
@@ -79,7 +103,7 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,BrandName,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Bike bike)
+        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,BrandName,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] BikeViewModel bike)
         {
             if (ModelState.IsValid)
             {
@@ -97,12 +121,12 @@ namespace BikeStore.Controllers.Admin
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Bike bike = db.Bikes.Find(id);
-            if (bike == null)
+            BikeViewModel bikeViewModel = AutoMapper.Mapper.Map < BikeViewModel >(db.Bikes.Find(id));
+            if (bikeViewModel == null)
             {
                 return HttpNotFound();
             }
-            return View(bike);
+            return View(bikeViewModel);
         }
 
         // POST: Bike/Delete/5
@@ -110,7 +134,7 @@ namespace BikeStore.Controllers.Admin
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Bike bike = db.Bikes.Find(id);
+            Bike bike= db.Bikes.Find(id);
             db.Bikes.Remove(bike);
             db.SaveChanges();
             return RedirectToAction("Index");
