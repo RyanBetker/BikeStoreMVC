@@ -23,8 +23,13 @@ namespace BikeStore
 
         private void InitializeMappings()
         {
-            AutoMapper.Mapper.CreateMap<BikeViewModel, Models.Bike>();
+            InitializeBikeMappings();
+        }
 
+        private static void InitializeBikeMappings()
+        {
+            AutoMapper.Mapper.CreateMap<BikeViewModel, Models.Bike>();
+            AutoMapper.Mapper.CreateMap<Models.Bike, BikeViewModel>().ForMember(vm => vm.BrandName, d => d.MapFrom(src => src.Brand.BrandName));
         }
     }
 }

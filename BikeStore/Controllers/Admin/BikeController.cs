@@ -19,7 +19,7 @@ namespace BikeStore.Controllers.Admin
         // GET: Bike
         public ActionResult Index()
         {
-            var bikesList = db.Bikes.ToList();
+            var bikesList = db.Bikes.Include(b => b.Brand).ToList();
             var bikeViewModels = AutoMapper.Mapper.Map<IList<Bike>, IList<BikeViewModel>>(bikesList);
             
             return View(bikeViewModels);
