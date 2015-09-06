@@ -40,12 +40,12 @@ namespace BikeStore.Migrations
                 new Brand() { BrandName = "Surly", CreatedBy = "Ryan", CreatedDate = DateTime.Now.AddDays(-2) },
                 new Brand() { BrandName = "Specialized", CreatedBy = "Joe Admin", CreatedDate = DateTime.Now.Date.AddMonths(-1) }
                 );
-
+            //save brands first, otherwise EF was trying to insert the below brands w/o required audit fields present
             context.SaveChanges();
 
             context.Bikes.AddOrUpdate(b => b.ModelNo,
-                new Bike() { Brand = context.Brands.First(b => b.BrandName == "Trek") , Color = "Green", CreatedBy = "Ryan", CreatedDate = DateTime.Now, ModelNo = "M800", FrameSize = FrameSizeType.Medium, Type = BikeType.Mountain, WheelSize = WheelSizeType.TwentyFive },
-                new Bike() { Brand = context.Brands.First(b => b.BrandName == "Specialized"), Color = "Grey", CreatedBy = "Ryan", CreatedDate = DateTime.Now, ModelNo = "S100", FrameSize = FrameSizeType.Large, Type = BikeType.Hybrid, WheelSize = WheelSizeType.TwentySeven }
+                new Bike() { BrandID = context.Brands.First(b => b.BrandName == "Trek").BrandID , Color = "Green", CreatedBy = "Ryan", CreatedDate = DateTime.Now, ModelNo = "M800", FrameSize = FrameSizeType.Medium, Type = BikeType.Mountain, WheelSize = WheelSizeType.TwentyFive },
+                new Bike() { BrandID = context.Brands.First(b => b.BrandName == "Specialized").BrandID, Color = "Grey", CreatedBy = "Ryan", CreatedDate = DateTime.Now, ModelNo = "S100", FrameSize = FrameSizeType.Large, Type = BikeType.Hybrid, WheelSize = WheelSizeType.TwentySeven }
                 );
 
             try
