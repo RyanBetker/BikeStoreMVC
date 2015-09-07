@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using BikeStore;
 using BikeStore.Models;
 using BikeStore.ViewModels;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace BikeStore.Controllers.Admin
 {
@@ -21,7 +23,7 @@ namespace BikeStore.Controllers.Admin
         {
             var bikesList = db.Bikes.Include(b => b.Brand).ToList();
             var bikeViewModels = AutoMapper.Mapper.Map<IList<Bike>, IList<BikeViewModel>>(bikesList);
-            
+
             return View(bikeViewModels);
         }
 
@@ -32,7 +34,7 @@ namespace BikeStore.Controllers.Admin
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BikeViewModel bikeViewModel = AutoMapper.Mapper.Map<BikeViewModel>(db.Bikes.Find(id));
+            BikeViewModel bikeViewModel = FindBikeByID(id);
             if (bikeViewModel == null)
             {
                 return HttpNotFound();
@@ -51,14 +53,17 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,Brand,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] BikeViewModel bike)
+        public ActionResult Create([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandName")] BikeViewModel bike)
         {
+            bike.CreatedBy = GetUserName();
+            bike.CreatedDate = DateTime.Now;
+            
             if (ModelState.IsValid)
             {
-                
                 Bike bikeData = AutoMapper.Mapper.Map<Bike>(bike);
 
-                AddBrandIfNotPresent(bike);
+                //Assign brandID
+                bikeData.BrandID = AddBrandIfNotPresent(bike).BrandID;
                 db.Bikes.Add(bikeData);
                 db.SaveChanges();
               
@@ -68,19 +73,32 @@ namespace BikeStore.Controllers.Admin
             return View(bike);
         }
 
-        private void AddBrandIfNotPresent(BikeViewModel bike)
+        private Brand AddBrandIfNotPresent(BikeViewModel bike)
         {
-            if (db.Brands.Any(b => b.BrandName == bike.BrandName) == false)
+            var brand = db.Brands.FirstOrDefault(b => b.BrandName == bike.BrandName);
+
+            if (brand == null)
             {
-                db.Brands.Add(
+                brand =
                     new Brand()
                     {
                         BrandName = bike.BrandName,
-                        CreatedBy = User.Identity.Name,
+                        CreatedBy = GetUserName(),
                         CreatedDate = DateTime.Now
-                    });
+                    };
 
+                db.Brands.Add(brand);
+                db.SaveChanges();
+
+                return brand; 
             }
+
+            return brand;
+        }
+
+        public string GetUserName()
+        {
+            return String.IsNullOrWhiteSpace(User.Identity.Name) ? "Admin" : User.Identity.Name;
         }
 
         // GET: Bike/Edit/5
@@ -90,11 +108,12 @@ namespace BikeStore.Controllers.Admin
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BikeViewModel bikeViewModel = AutoMapper.Mapper.Map < BikeViewModel > (db.Bikes.Find(id));
+            BikeViewModel bikeViewModel = FindBikeByID(id, includeBrandList: true);
             if (bikeViewModel == null)
             {
                 return HttpNotFound();
             }
+
             return View(bikeViewModel);
         }
 
@@ -103,11 +122,34 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,Type,FrameSize,WheelSize,Color,BrandName,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] BikeViewModel bike)
+        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandName")] BikeViewModel bike)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(bike).State = EntityState.Modified;
+                //Assign audit columns
+                bike.ModifiedBy = GetUserName();
+                bike.ModifiedDate = DateTime.Now;
+
+                var bikeEntityToUpdate = db.Bikes.First(b => b.BikeID == bike.BikeID);
+
+                //ensure these values get set to some values as they're Required and EF will freak if not given.
+                //I didn't allow them to be Bound because the user could have changed
+                bike.CreatedBy = bikeEntityToUpdate.CreatedBy;
+                bike.CreatedDate = bikeEntityToUpdate.CreatedDate;
+
+                bikeEntityToUpdate = AutoMapper.Mapper.Map(bike, bikeEntityToUpdate);
+                
+                bikeEntityToUpdate.BrandID = AddBrandIfNotPresent(bike).BrandID;
+                //TODO: Verify we get proper bike from the context and update that
+                db.Entry(bikeEntityToUpdate).State = EntityState.Modified;
+                
+                //these audit columns' values shouldn't change at all or it wrecks the history data:
+                bool createdByIsModified = db.Entry(bikeEntityToUpdate).Property(b => b.CreatedBy).IsModified;
+                
+                db.Entry(bikeEntityToUpdate).Property(b => b.CreatedBy).IsModified = false;
+                db.Entry(bikeEntityToUpdate).Property(b => b.CreatedDate).IsModified = false;
+
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -121,12 +163,33 @@ namespace BikeStore.Controllers.Admin
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BikeViewModel bikeViewModel = AutoMapper.Mapper.Map < BikeViewModel >(db.Bikes.Find(id));
+            BikeViewModel bikeViewModel = FindBikeByID(id);
             if (bikeViewModel == null)
             {
                 return HttpNotFound();
             }
             return View(bikeViewModel);
+        }
+
+        private BikeViewModel FindBikeByID(int? id, bool includeBrandList = false)
+        {
+            BikeViewModel bikeViewModel;
+
+            if (includeBrandList)
+            {
+                bikeViewModel = new BikeViewModel();//db.Brands.ToList());
+            }
+            else
+            {
+                bikeViewModel = new BikeViewModel();
+            }
+
+            var bikeData = db.Bikes.Include(b => b.Brand).FirstOrDefault(b => b.BikeID == id);
+
+            bikeViewModel = AutoMapper.Mapper.Map<BikeViewModel>(bikeData, 
+                opt => opt.ConstructServicesUsing(f => bikeViewModel));
+            
+            return bikeViewModel;
         }
 
         // POST: Bike/Delete/5
