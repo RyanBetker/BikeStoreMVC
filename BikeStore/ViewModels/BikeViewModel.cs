@@ -11,7 +11,7 @@ namespace BikeStore.ViewModels
     public class BikeViewModel : IHasAuditColumns
     {
         public int BikeID { get; set; }
-        [Required, MaxLength(10)]
+        [Required, MaxLength(10), Display(Name = "Model No")]
         public string ModelNo { get; set; }
         [Required, Display(Name = "Wholesale Price")]
         public decimal WholesalePrice { get; set; }
@@ -19,9 +19,9 @@ namespace BikeStore.ViewModels
         public decimal Price { get; set; }
         [Required]
         public BikeType Type { get; set; }
-        [Required]
+        [Required, Display(Name = "Frame Size")]
         public FrameSizeType FrameSize { get; set; }
-        [Required]
+        [Required, Display(Name = "Wheel Size")]
         public WheelSizeType WheelSize { get; set; }
 
         [MaxLength(10)]
@@ -30,7 +30,7 @@ namespace BikeStore.ViewModels
 
         [Display(Name = "Brand")]
         public int BrandID { get; set; }
-        [Required, MaxLength(20)]
+        [Required, MaxLength(20), Display(Name = "Brand Name")]
         public string BrandName { get; set; }
 
         public IEnumerable<SelectListItem> AvailableBrands 
@@ -55,12 +55,13 @@ namespace BikeStore.ViewModels
         //    _brands = availableBrands;
         //}
 
-
+        [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
-        [DisplayFormat(DataFormatString="{0:g}", ApplyFormatInEditMode=true)]
+        [Display(Name = "Created Date"), DisplayFormat(DataFormatString = "{0:g}", ApplyFormatInEditMode = true)]
         public DateTime CreatedDate { get; set; }
+        [Display(Name = "Modified By")]
         public string ModifiedBy { get; set; }
-        [DisplayFormat(DataFormatString = "{0:g}", ApplyFormatInEditMode=true)]
+        [Display(Name = "Modified Date"), DisplayFormat(DataFormatString = "{0:g}", ApplyFormatInEditMode=true)]
         public DateTime? ModifiedDate { get; set; }
     }
 }
