@@ -11,9 +11,17 @@ namespace BikeStore.ViewModels
     public class BikeViewModel : BaseModel
     {
         public int BikeID { get; set; }
+        [Required]
         public string ModelNo { get; set; }
+        [Required]
+        public decimal WholesalePrice { get; set; }
+        [Required]
+        public decimal Price { get; set; }
+        [Required]
         public BikeType Type { get; set; }
+        [Required]
         public FrameSizeType FrameSize { get; set; }
+        [Required]
         public WheelSizeType WheelSize { get; set; }
 
         public string Color { get; set; }

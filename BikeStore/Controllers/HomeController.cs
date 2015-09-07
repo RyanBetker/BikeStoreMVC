@@ -10,6 +10,7 @@ namespace BikeStore.Controllers
     {
         public ActionResult Index()
         {
+            return RedirectToAction("Index", "Bike");
             return View();
         }
 

@@ -36,6 +36,10 @@ namespace BikeStore.Models
         [Key]
         public int BikeID { get; set; }
         public string ModelNo { get; set; }
+        [Required]
+        public decimal WholesalePrice { get; set; }
+        [Required]
+        public decimal Price { get; set; }
         public BikeType Type { get; set; }
         public FrameSizeType FrameSize { get; set; }
         public WheelSizeType WheelSize { get; set; }
