@@ -55,9 +55,12 @@ namespace BikeStore.ViewModels
         //    _brands = availableBrands;
         //}
 
+
         public string CreatedBy { get; set; }
+        [DisplayFormat(DataFormatString="{0:g}", ApplyFormatInEditMode=true)]
         public DateTime CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
+        [DisplayFormat(DataFormatString = "{0:g}", ApplyFormatInEditMode=true)]
         public DateTime? ModifiedDate { get; set; }
     }
 }
