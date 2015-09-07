@@ -12,6 +12,8 @@ namespace BikeStore.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int BrandID { get; set; }
+        [Required, MaxLength(20)]
         public string BrandName { get; set; }
+
     }
 }

@@ -35,6 +35,7 @@ namespace BikeStore.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int BikeID { get; set; }
+        [Required, MaxLength(10)]
         public string ModelNo { get; set; }
         [Required]
         public decimal WholesalePrice { get; set; }
@@ -44,12 +45,13 @@ namespace BikeStore.Models
         public FrameSizeType FrameSize { get; set; }
         public WheelSizeType WheelSize { get; set; }
 
+        [MaxLength(10)]
         public string Color { get; set; }
 
+        [Required]
         public int BrandID { get; set; }
 
         [ForeignKey("BrandID")]
         public Brand Brand { get; set; }
-
     }
 }

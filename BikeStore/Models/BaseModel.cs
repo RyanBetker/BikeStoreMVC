@@ -8,7 +8,9 @@ namespace BikeStore.Models
 {
     public class BaseModel
     {
+        [Required]
         public string CreatedBy { get; set; }
+        [Required]
         public DateTime CreatedDate { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
