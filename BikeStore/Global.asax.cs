@@ -18,7 +18,17 @@ namespace BikeStore
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             InitializeMappings();
-            new BikeStore.Migrations.Configuration().SeedFromExternal(new BikeStoreCustomContext());
+
+            SetupDatabaseIfNotExists();
+        }
+
+        private static void SetupDatabaseIfNotExists()
+        {
+            var context = new BikeStoreCustomContext();
+            if (context.Database.CreateIfNotExists())
+            {
+                new BikeStore.Migrations.Configuration().SeedFromExternal(context);
+            }
         }
 
         private void InitializeMappings()
