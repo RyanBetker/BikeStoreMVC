@@ -65,7 +65,10 @@ namespace BikeStore.Controllers.Admin
         // GET: Brand/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var brand = db.Brands.Find(id);
+            var brandViewModel = AutoMapper.Mapper.Map<BrandViewModel>(brand);
+
+            return View(brandViewModel);
         }
 
         // POST: Brand/Edit/5
