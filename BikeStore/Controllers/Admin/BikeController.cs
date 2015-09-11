@@ -14,6 +14,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BikeStore.Controllers.Admin
 {
+    [RoutePrefix("Admin/Bike")]
+    [Route("{action=index}")]
     public class BikeController : Controller
     {
         private BikeStoreContext db = new BikeStoreContext();
@@ -22,6 +24,16 @@ namespace BikeStore.Controllers.Admin
         public ActionResult Index()
         {
             var bikesList = db.Bikes.Include(b => b.Brand).ToList();
+            var destination = new List<BikeViewModel>();
+            for (int i = 0; i < bikesList.Count; i++)
+            {
+                destination.Add(new BikeViewModel());
+            }
+            
+            //wasn't able to get these going, so property for AvailableBrands needs to be public
+            //Func<BikeViewModel, object> funcConstruction = type => { return new BikeViewModel(); };
+            //, opt => opt.ConstructServicesUsing(funcConstruction));
+
             var bikeViewModels = AutoMapper.Mapper.Map<IList<Bike>, IList<BikeViewModel>>(bikesList);
 
             return View(bikeViewModels);
@@ -45,7 +57,9 @@ namespace BikeStore.Controllers.Admin
         // GET: Bike/Create
         public ActionResult Create()
         {
-            return View();
+            var newBike = new BikeViewModel();
+            newBike.Brands = AutoMapper.Mapper.Map<List<BrandViewModel>>(db.Brands);
+            return View(newBike);
         }
 
         // POST: Bike/Create
@@ -55,7 +69,7 @@ namespace BikeStore.Controllers.Admin
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandName")] BikeViewModel bike)
         {
-            bike.CreatedBy = GetUserName();
+            bike.CreatedBy = this.GetUserName();
             bike.CreatedDate = DateTime.Now;
             
             if (ModelState.IsValid)
@@ -83,7 +97,7 @@ namespace BikeStore.Controllers.Admin
                     new Brand()
                     {
                         BrandName = bike.BrandName,
-                        CreatedBy = GetUserName(),
+                        CreatedBy = this.GetUserName(),
                         CreatedDate = DateTime.Now
                     };
 
@@ -94,11 +108,6 @@ namespace BikeStore.Controllers.Admin
             }
 
             return brand;
-        }
-
-        public string GetUserName()
-        {
-            return String.IsNullOrWhiteSpace(User.Identity.Name) ? "Admin" : User.Identity.Name;
         }
 
         // GET: Bike/Edit/5
@@ -114,6 +123,8 @@ namespace BikeStore.Controllers.Admin
                 return HttpNotFound();
             }
 
+            bikeViewModel.Brands = AutoMapper.Mapper.Map<List<BrandViewModel>>(db.Brands);
+
             return View(bikeViewModel);
         }
 
@@ -127,7 +138,7 @@ namespace BikeStore.Controllers.Admin
             if (ModelState.IsValid)
             {
                 //Assign audit columns
-                bike.ModifiedBy = GetUserName();
+                bike.ModifiedBy = this.GetUserName();
                 bike.ModifiedDate = DateTime.Now;
 
                 var bikeEntityToUpdate = db.Bikes.First(b => b.BikeID == bike.BikeID);

@@ -26,34 +26,36 @@ namespace BikeStore.ViewModels
 
         [MaxLength(10)]
         public string Color { get; set; }
-        private readonly List<Brand> _brands;
-
+        
+        /// <summary>
+        /// Holds Brands view data, used by BrandSelectList
+        /// </summary>
+        public List<BrandViewModel> Brands { get; set; }
+        
         [Display(Name = "Brand")]
         public int BrandID { get; set; }
         [Required, MaxLength(20), Display(Name = "Brand Name")]
         public string BrandName { get; set; }
 
-        public IEnumerable<SelectListItem> AvailableBrands 
+        /// <summary>
+        /// For UI dropdowns
+        /// </summary>
+        public IEnumerable<SelectListItem> BrandSelectList
         {
             get
             {
-                if (_brands == null)
+                if (Brands == null)
                 {
                     throw new ArgumentNullException("Brand list data is not available");
                 }
-                return new SelectList(_brands, BrandID, "BrandName");
+                return new SelectList(Brands, "BrandID", "BrandName");
             }
         }
 
-        //public BikeViewModel()
-        //{
+        public BikeViewModel()
+        {
 
-        //}
-
-        //public BikeViewModel(List<Brand> availableBrands)
-        //{
-        //    _brands = availableBrands;
-        //}
+        }
 
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
