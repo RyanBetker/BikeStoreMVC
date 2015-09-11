@@ -37,7 +37,7 @@ namespace BikeStore.Controllers.Admin
 
         // POST: Brand/Create
         [HttpPost]
-        public ActionResult Create([Bind(Include="BrandID, BrandName")] BrandViewModel brandViewModel)
+        public ActionResult Create([Bind(Include="BrandName")] BrandViewModel brandViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -48,6 +48,8 @@ namespace BikeStore.Controllers.Admin
 
                     var brand = AutoMapper.Mapper.Map<BikeStore.Models.Brand>(brandViewModel);
                     db.Brands.Add(brand);
+                    db.SaveChanges();
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
