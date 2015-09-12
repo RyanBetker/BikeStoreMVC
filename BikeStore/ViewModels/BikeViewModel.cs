@@ -34,7 +34,7 @@ namespace BikeStore.ViewModels
         
         [Display(Name = "Brand")]
         public int BrandID { get; set; }
-        [Required, MaxLength(20), Display(Name = "Brand Name")]
+        //[Required, MaxLength(20), Display(Name = "Brand Name")]
         public string BrandName { get; set; }
 
         /// <summary>

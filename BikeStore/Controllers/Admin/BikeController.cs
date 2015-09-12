@@ -91,7 +91,7 @@ namespace BikeStore.Controllers.Admin
         {
             var brand = db.Brands.FirstOrDefault(b => b.BrandName == bike.BrandName);
 
-            if (brand == null)
+            if (brand == null && String.IsNullOrWhiteSpace(bike.BrandName) == false)
             {
                 brand =
                     new Brand()
@@ -133,7 +133,7 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandName")] BikeViewModel bike)
+        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,Brands")] BikeViewModel bike)
         {
             if (ModelState.IsValid)
             {

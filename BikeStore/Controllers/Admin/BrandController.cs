@@ -26,7 +26,15 @@ namespace BikeStore.Controllers.Admin
         // GET: Brand/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var brandViewModel = FindBrandByID(id);
+            if (brandViewModel != null)
+            {
+                return View(brandViewModel);                
+            }
+            else
+            {
+                return HttpNotFound();
+            }
         }
 
         // GET: Brand/Create
@@ -65,10 +73,23 @@ namespace BikeStore.Controllers.Admin
         // GET: Brand/Edit/5
         public ActionResult Edit(int id)
         {
+            var brandViewModel = FindBrandByID(id);
+
+            if (brandViewModel != null)
+            {
+                return View(brandViewModel); 
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+        }
+
+        private BrandViewModel FindBrandByID(int id)
+        {
             var brand = db.Brands.Find(id);
             var brandViewModel = AutoMapper.Mapper.Map<BrandViewModel>(brand);
-
-            return View(brandViewModel);
+            return brandViewModel;
         }
 
         // POST: Brand/Edit/5
@@ -105,6 +126,8 @@ namespace BikeStore.Controllers.Admin
                 }
                 catch(Exception ex)
                 {
+                    //TODO: Needs unique constraint on brand and friendly message "BrandName already exists"
+
                     //TODO: Add Elmah error logging to log the ex.
                     ModelState.AddModelError("BrandID", "Error updating the brand.");
                     return View();
@@ -119,7 +142,16 @@ namespace BikeStore.Controllers.Admin
         // GET: Brand/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var brandViewModel = FindBrandByID(id);
+
+            if (brandViewModel != null)
+            {
+                return View(brandViewModel);
+            }
+            else
+            {
+                return HttpNotFound();
+            }
         }
 
         // POST: Brand/Delete/5
@@ -130,6 +162,7 @@ namespace BikeStore.Controllers.Admin
             {
                 var brand = db.Brands.Find(id);
                 db.Brands.Remove(brand);
+                //TODO: Should fail if any bikes are attached, but doesn't - wipes them. Would need an is active flag. instead
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
