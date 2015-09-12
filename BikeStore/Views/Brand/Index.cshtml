@@ -1,17 +1,19 @@
 ﻿@model IEnumerable<BikeStore.ViewModels.BrandViewModel>
 
 @{
-    ViewBag.Title = "Index";
+
+    ViewBag.Title = "Brand Administration";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Brand Administration</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
     <tr>
+        <th></th>
         <th>
             @Html.DisplayNameFor(model => model.BrandID)
         </th>
@@ -30,11 +32,15 @@
         <th>
             @Html.DisplayNameFor(model => model.ModifiedDate)
         </th>
-        <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.BrandID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.BrandID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.BrandID })
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.BrandID)
         </td>
@@ -52,11 +58,6 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.ModifiedDate)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
         </td>
     </tr>
 }
