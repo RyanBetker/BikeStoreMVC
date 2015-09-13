@@ -77,6 +77,7 @@ namespace BikeStore.Controllers.Admin
                 Bike bikeData = AutoMapper.Mapper.Map<Bike>(bike);
 
                 db.Bikes.Add(bikeData);
+                //TODO: BUG: Needs unique constraint on brandID, ModelNo and friendly message "Model already exists for this brand"
                 db.SaveChanges();
               
                 return RedirectToAction("Index");
@@ -155,7 +156,7 @@ namespace BikeStore.Controllers.Admin
                 db.Entry(bikeEntityToUpdate).Property(b => b.CreatedBy).IsModified = false;
                 db.Entry(bikeEntityToUpdate).Property(b => b.CreatedDate).IsModified = false;
 
-
+                //TODO: BUG: Needs unique constraint on brandID, ModelNo and friendly message "Model already exists for this brand"
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
