@@ -47,6 +47,12 @@ namespace BikeStore.Controllers.Admin
         [HttpPost]
         public ActionResult Create([Bind(Include="BrandName")] BrandViewModel brandViewModel)
         {
+            return Add(brandViewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Add(BrandViewModel brandViewModel, bool fromClientPage = false)
+        {
             if (ModelState.IsValid)
             {
                 try
@@ -57,8 +63,14 @@ namespace BikeStore.Controllers.Admin
                     var brand = AutoMapper.Mapper.Map<BikeStore.Models.Brand>(brandViewModel);
                     db.Brands.Add(brand);
                     db.SaveChanges();
-
-                    return RedirectToAction("Index");
+                    if (fromClientPage)
+                    {
+                        return Json(brand.BrandID, JsonRequestBehavior.AllowGet); 
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
                 catch (Exception ex)
                 {

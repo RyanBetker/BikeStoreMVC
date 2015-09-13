@@ -133,7 +133,7 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,Brands")] BikeViewModel bike)
+        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandID,Brands")] BikeViewModel bike)
         {
             if (ModelState.IsValid)
             {
@@ -149,9 +149,6 @@ namespace BikeStore.Controllers.Admin
                 bike.CreatedDate = bikeEntityToUpdate.CreatedDate;
 
                 bikeEntityToUpdate = AutoMapper.Mapper.Map(bike, bikeEntityToUpdate);
-                
-                bikeEntityToUpdate.BrandID = AddBrandIfNotPresent(bike).BrandID;
-                //TODO: Verify we get proper bike from the context and update that
                 db.Entry(bikeEntityToUpdate).State = EntityState.Modified;
                 
                 //these audit columns' values shouldn't change at all or it wrecks the history data:

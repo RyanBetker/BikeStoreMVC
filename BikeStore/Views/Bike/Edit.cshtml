@@ -73,15 +73,15 @@
         <div class="form-group">
             @Html.Label("Brand Name", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @if (Model.Brands != null)
-                {   
-                    @Html.DropDownListFor(model => model.BrandID, Model.BrandSelectList, "Add new Brand", new { @class = "form-control", @id = "ddlBrandName" }) 
-                }
-                @Html.ValidationMessageFor(model => model.BrandID, "", new { @class = "text-danger" })
+            @if (Model.Brands != null)
+            {   
+                @Html.DropDownListFor(model => model.BrandID, Model.BrandSelectList, "Add new Brand", new { @class = "form-control", @id = "ddlBrandName" })
                 <div style="text-align: left">
                     or
-                    @Html.ActionLink("Add Brand", "Create", "Brand", null, new { @class = "btn btn-default", @type = "button" })
+                    <button type="button" class="btn btn-default" id="btnAddBrand">Add Brand</button>
                 </div>
+            }
+                @Html.ValidationMessageFor(model => model.BrandID, "", new { @class = "text-danger" })
             </div>
         </div>
 
