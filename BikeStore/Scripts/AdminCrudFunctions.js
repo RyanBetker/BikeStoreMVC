@@ -6,32 +6,12 @@
 $(document).ready(function () {
 
     var ddlBrandName = $('#ddlBrandName');
-    
-    var fnOnBrandChange = function () {
-        var selectedBrandID = ddlBrandName.val();
-        
-        if (selectedBrandID == "")
-        {            
-            AddBrandProcess();
-        }
-    };
-
     function AddBrandProcess()
     {
         //if value is blank, give popup to add brand, then append to list
         var newBrandName = prompt('Enter new brand name', '');
         
-        if (!IsNullEmptyOrWhitespace(newBrandName)) { 
-            $.post({
-                url: "/Brand/Add",
-                data: "{'BrandName' : '" + newBrandName + "', 'fromClientPage: true}",
-                success: function (result) {
-                    alert(result);
-
-                },
-                error: function (jqXHR, errorType, ex) { alert('error occured: ' + errorType + '. Ex: ' + ex); }
-            });
-
+        if (!IsNullEmptyOrWhitespace(newBrandName)) {            
             $.ajax({
                 url: '/Brand/Add',
                 data: "{'BrandName' : '" + newBrandName + "', 'fromClientPage': 'true'}",
@@ -49,7 +29,5 @@ $(document).ready(function () {
             alert('Please retry and enter the new brand name that you\'d like added');
         }
     }
-
-    $('#ddlBrandName').change(fnOnBrandChange);
     $('#btnAddBrand').click(AddBrandProcess);
 });

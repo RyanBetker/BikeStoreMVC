@@ -67,7 +67,7 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandName")] BikeViewModel bike)
+        public ActionResult Create([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,Brands,BrandID")] BikeViewModel bike)
         {
             bike.CreatedBy = this.GetUserName();
             bike.CreatedDate = DateTime.Now;
@@ -76,8 +76,6 @@ namespace BikeStore.Controllers.Admin
             {
                 Bike bikeData = AutoMapper.Mapper.Map<Bike>(bike);
 
-                //Assign brandID
-                bikeData.BrandID = AddBrandIfNotPresent(bike).BrandID;
                 db.Bikes.Add(bikeData);
                 db.SaveChanges();
               

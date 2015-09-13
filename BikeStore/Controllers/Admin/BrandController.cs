@@ -74,6 +74,7 @@ namespace BikeStore.Controllers.Admin
                 }
                 catch (Exception ex)
                 {
+                    //TODO: BUG: Needs unique constraint on brand and friendly message "BrandName already exists"
                     //TODO: Add Elmah error logging to log the ex.
                     ModelState.AddModelError("BrandID", "Error creating the brand.");
                     return View();
@@ -138,7 +139,7 @@ namespace BikeStore.Controllers.Admin
                 }
                 catch(Exception ex)
                 {
-                    //TODO: Needs unique constraint on brand and friendly message "BrandName already exists"
+                    //TODO: BUG: Needs unique constraint on brand and friendly message "BrandName already exists"
 
                     //TODO: Add Elmah error logging to log the ex.
                     ModelState.AddModelError("BrandID", "Error updating the brand.");

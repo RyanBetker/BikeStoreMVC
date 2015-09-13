@@ -75,7 +75,7 @@
             <div class="col-md-10">
             @if (Model.Brands != null)
             {   
-                @Html.DropDownListFor(model => model.BrandID, Model.BrandSelectList, "Add new Brand", new { @class = "form-control", @id = "ddlBrandName" })
+                @Html.DropDownListFor(model => model.BrandID, Model.BrandSelectList, "Choose a brand", new { @class = "form-control", @id = "ddlBrandName" })
                 <div style="text-align: left">
                     or
                     <button type="button" class="btn btn-default" id="btnAddBrand">Add Brand</button>
