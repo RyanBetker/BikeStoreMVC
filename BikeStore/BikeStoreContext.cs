@@ -8,6 +8,10 @@ namespace BikeStore
 
     public class BikeStoreCustomContext : BikeStoreContext
     {
+        public BikeStoreCustomContext() : base()
+        {
+
+        }
         public override int SaveChanges()
         {
             try
@@ -43,6 +47,7 @@ namespace BikeStore
         public BikeStoreContext()
             : base("name=BikeStoreContext")
         {
+            Database.Log = (sqlString) => Debug.WriteLine(sqlString);
         }
 
         // Add a DbSet for each entity type that you want to include in your model. For more information 
