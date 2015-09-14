@@ -39,9 +39,9 @@ namespace BikeStore
         private static void InitializeBikeMappings()
         {
             AutoMapper.Mapper.CreateMap<BikeViewModel, Models.Bike>();
-            AutoMapper.Mapper.CreateMap<Models.Bike, BikeViewModel>();
+            AutoMapper.Mapper.CreateMap<Models.Bike, BikeViewModel>()
                 //if property mapping needed, example:
-                //.ForMember(vm => vm.BrandName, d => d.MapFrom(src => src.Brand.BrandName));
+                .ForMember(vm => vm.BrandName, d => d.MapFrom(src => src.Brand.BrandName));
 
             AutoMapper.Mapper.CreateMap<BrandViewModel, Models.Brand>().ReverseMap();
         }
