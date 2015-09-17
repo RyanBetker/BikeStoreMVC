@@ -6,7 +6,7 @@ namespace BikeStore
     using System.Diagnostics;
     using System.Linq;
 
-    public class BikeStoreCustomContext : BikeStoreContext
+    public class BikeStoreCustomContext : BikeStoreContext, IBikeStoreRepository
     {
         public BikeStoreCustomContext() : base()
         {

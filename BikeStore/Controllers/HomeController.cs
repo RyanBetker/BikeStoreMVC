@@ -8,10 +8,22 @@ namespace BikeStore.Controllers
 {
     public class HomeController : Controller
     {
+        private IBikeStoreRepository _db;
+        public HomeController() : this(new BikeStoreCustomContext())
+        {
+
+        }
+        public HomeController(IBikeStoreRepository db)
+        {
+            _db = db;
+        }
         public ActionResult Index()
         {
-            return RedirectToAction("Index", "Bike");
-            return View();
+            var db = new BikeStoreCustomContext();
+            var brandListViewModels = AutoMapper.Mapper.Map<List<ViewModels.BrandViewModel>>(db.Brands);
+
+            //return RedirectToAction("Index", "Bike");
+            return View(brandListViewModels);
         }
 
         public ActionResult About()
