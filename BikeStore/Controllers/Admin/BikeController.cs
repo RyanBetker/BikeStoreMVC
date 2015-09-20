@@ -29,10 +29,6 @@ namespace BikeStore.Controllers.Admin
             {
                 destination.Add(new BikeViewModel());
             }
-            
-            //wasn't able to get these going, so property for AvailableBrands needs to be public
-            //Func<BikeViewModel, object> funcConstruction = type => { return new BikeViewModel(); };
-            //, opt => opt.ConstructServicesUsing(funcConstruction));
 
             var bikeViewModels = AutoMapper.Mapper.Map<IList<Bike>, IList<BikeViewModel>>(bikesList);
 
