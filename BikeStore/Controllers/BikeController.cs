@@ -11,15 +11,17 @@ using BikeStore.Models;
 using BikeStore.ViewModels;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 
-namespace BikeStore.Controllers.Admin
+namespace BikeStore.Controllers
 {
-    [RoutePrefix("Admin/Bike")]
-    [Route("{action=index}")]
+#if !DEBUG
+    [Authorize] 
+#endif
     public class BikeController : Controller
     {
         private BikeStoreContext db = new BikeStoreContext();
-
+        
         // GET: Bike
         public ActionResult Index()
         {
@@ -63,7 +65,7 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,Brands,BrandID")] BikeViewModel bike)
+        public ActionResult Create([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,Brands,BrandID")] BikeViewModel bike, HttpPostedFileBase fileDisplayImage)
         {
             bike.CreatedBy = this.GetUserName();
             bike.CreatedDate = DateTime.Now;
@@ -72,6 +74,10 @@ namespace BikeStore.Controllers.Admin
             {
                 Bike bikeData = AutoMapper.Mapper.Map<Bike>(bike);
 
+                if (fileDisplayImage != null && fileDisplayImage.ContentLength > 0)
+                {
+                    bikeData.DisplayImage = GetDisplayImageBytes(fileDisplayImage);
+                }
                 db.Bikes.Add(bikeData);
                 //TODO: BUG: Needs unique constraint on brandID, ModelNo and friendly message "Model already exists for this brand"
                 db.SaveChanges();
@@ -128,7 +134,7 @@ namespace BikeStore.Controllers.Admin
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandID,Brands")] BikeViewModel bike)
+        public ActionResult Edit([Bind(Include = "BikeID,ModelNo,WholesalePrice,Price,Type,FrameSize,WheelSize,Color,BrandID,Brands")] BikeViewModel bike, HttpPostedFileBase fileDisplayImage)
         {
             if (ModelState.IsValid)
             {
@@ -138,6 +144,10 @@ namespace BikeStore.Controllers.Admin
 
                 var bikeEntityToUpdate = db.Bikes.First(b => b.BikeID == bike.BikeID);
 
+                if (fileDisplayImage != null && fileDisplayImage.ContentLength > 0)
+                {
+                    bikeEntityToUpdate.DisplayImage = GetDisplayImageBytes(fileDisplayImage);
+                }
                 //ensure these values get set to some values as they're Required and EF will freak if not given.
                 //I didn't allow them to be Bound because the user could have changed
                 bike.CreatedBy = bikeEntityToUpdate.CreatedBy;
@@ -157,6 +167,18 @@ namespace BikeStore.Controllers.Admin
                 return RedirectToAction("Index");
             }
             return View(bike);
+        }
+
+        private static byte[] GetDisplayImageBytes(HttpPostedFileBase fileDisplayImage)
+        {
+            byte[] imageBytes = null;
+
+            if (fileDisplayImage.ContentLength > 0)
+            {
+                var br = new BinaryReader(fileDisplayImage.InputStream);
+                imageBytes = br.ReadBytes(fileDisplayImage.ContentLength);
+            }
+            return imageBytes;
         }
 
         // GET: Bike/Delete/5

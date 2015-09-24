@@ -24,6 +24,12 @@ namespace BikeStore.ViewModels
         [Required, Display(Name = "Wheel Size")]
         public WheelSizeType WheelSize { get; set; }
 
+        public byte[] DisplayImage { get; set; }
+        /// <summary>
+        /// Base 64 string to show
+        /// </summary>
+        public string ImageToShow { get; set; }
+
         [MaxLength(10)]
         public string Color { get; set; }
         

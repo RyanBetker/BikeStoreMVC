@@ -145,8 +145,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\Admin\BikeController.cs" />
-    <Compile Include="Controllers\Admin\BrandController.cs" />
+    <Compile Include="Controllers\BikeController.cs" />
+    <Compile Include="Controllers\BrandController.cs" />
     <Compile Include="Controllers\ControllerExtensions.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">

@@ -6,10 +6,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace BikeStore.Controllers.Admin
+namespace BikeStore.Controllers
 {
-    [RoutePrefix("Admin/Brand")]
-    //[Route("action=index")]
+    [Authorize]
     public class BrandController : Controller
     {
         private BikeStoreCustomContext db = new BikeStoreCustomContext();

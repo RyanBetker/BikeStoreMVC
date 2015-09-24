@@ -45,6 +45,7 @@ namespace BikeStore.Models
         public FrameSizeType FrameSize { get; set; }
         public WheelSizeType WheelSize { get; set; }
 
+        public byte[] DisplayImage { get; set; }
         [MaxLength(10)]
         public string Color { get; set; }
 
