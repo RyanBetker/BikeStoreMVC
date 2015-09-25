@@ -56,7 +56,7 @@ namespace BikeStore.Controllers
         public ActionResult Create()
         {
             var newBike = new BikeViewModel();
-            newBike.Brands = AutoMapper.Mapper.Map<List<BrandViewModel>>(db.Brands);
+            newBike.Brands = GetBrandList();
             return View(newBike);
         }
 
@@ -124,9 +124,12 @@ namespace BikeStore.Controllers
                 return HttpNotFound();
             }
 
-            bikeViewModel.Brands = AutoMapper.Mapper.Map<List<BrandViewModel>>(db.Brands);
-
             return View(bikeViewModel);
+        }
+
+        private List<BrandViewModel> GetBrandList()
+        {
+            return AutoMapper.Mapper.Map<List<BrandViewModel>>(db.Brands.OrderBy(b=>b.BrandName));
         }
 
         // POST: Bike/Edit/5
@@ -198,22 +201,18 @@ namespace BikeStore.Controllers
 
         private BikeViewModel FindBikeByID(int? id, bool includeBrandList = false)
         {
-            BikeViewModel bikeViewModel;
-
-            if (includeBrandList)
-            {
-                bikeViewModel = new BikeViewModel();//db.Brands.ToList());
-            }
-            else
-            {
-                bikeViewModel = new BikeViewModel();
-            }
+            BikeViewModel bikeViewModel = new BikeViewModel();
 
             var bikeData = db.Bikes.Include(b => b.Brand).FirstOrDefault(b => b.BikeID == id);
 
             bikeViewModel = AutoMapper.Mapper.Map<BikeViewModel>(bikeData, 
                 opt => opt.ConstructServicesUsing(f => bikeViewModel));
-            
+
+            if (includeBrandList)
+            {
+                bikeViewModel.Brands = GetBrandList();
+            }
+
             return bikeViewModel;
         }
 
