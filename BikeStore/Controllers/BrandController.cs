@@ -62,7 +62,7 @@ namespace BikeStore.Controllers
                 {
                     brandViewModel.CreatedBy = this.GetUserName();
                     brandViewModel.CreatedDate = DateTime.Now;
-
+                    
                     var brand = AutoMapper.Mapper.Map<BikeStore.Models.Brand>(brandViewModel);
                     db.Brands.Add(brand);
                     db.SaveChanges();
@@ -77,20 +77,22 @@ namespace BikeStore.Controllers
                 }
                 catch(DbUpdateException ex)
                 {
-                    //TODO: Add Elmah error logging to log the ex.
+                    Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+
                     if (ex.IsUniqueConstraintViolation())
                     {
                         ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameExists);
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Error creating the brand.");
+                        ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameCreationError);
                     }
                 }
                 catch (Exception ex)
                 {
-                    //TODO: Add Elmah error logging to log the ex.
-                    ModelState.AddModelError("", "Error creating the brand.");
+                    Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+
+                    ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameCreationError );
                     return View();
                 }
             }
@@ -128,6 +130,7 @@ namespace BikeStore.Controllers
             {
                 try
                 {
+                    throw new ArgumentException("brand name");
                     //Assign audit columns
                     brand.ModifiedBy = this.GetUserName();
                     brand.ModifiedDate = DateTime.Now;
@@ -153,23 +156,21 @@ namespace BikeStore.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
-                    //TODO: Add Elmah error logging to log the ex.
+                    Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
                     if (ex.IsUniqueConstraintViolation())
                     {
                         ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameExists);
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Error updating the brand.");
+                        ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameUpdateError);
                     }
                     return View();
                 }
                 catch(Exception ex)
                 {
-                    //TODO: BUG: Needs unique constraint on brand and friendly message "BrandName already exists"
-
-                    //TODO: Add Elmah error logging to log the ex.
-                    ModelState.AddModelError("", "Error updating the brand.");
+                    Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                    ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameUpdateError);
                     return View();
                 }
             }
@@ -202,14 +203,15 @@ namespace BikeStore.Controllers
             {
                 var brand = db.Brands.Find(id);
                 db.Brands.Remove(brand);
-                //TODO: Should fail if any bikes are attached, but doesn't - wipes them. Would need an is active flag. instead
+                //TODO: BUG: Should fail if any bikes are attached, but doesn't - wipes them. Would need an is active flag. instead
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                //TODO: Add Elmah error logging to log the ex.
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+
                 ModelState.AddModelError("BrandID", "Error deleting the brand.");
                 return View();
             }

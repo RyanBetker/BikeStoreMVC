@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BrandNameCreationError" xml:space="preserve">
+    <value>Error creating the brand. Try again or contact the site administrator</value>
+  </data>
   <data name="BrandNameExists" xml:space="preserve">
     <value>BrandName already exists, please choose another</value>
+  </data>
+  <data name="BrandNameUpdateError" xml:space="preserve">
+    <value>Error updating the brand. Try again or contact the site administrator</value>
   </data>
 </root>

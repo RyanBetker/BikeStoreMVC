@@ -61,11 +61,29 @@ namespace BikeStore.App_GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error creating the brand. Try again or contact the site administrator.
+        /// </summary>
+        internal static string BrandNameCreationError {
+            get {
+                return ResourceManager.GetString("BrandNameCreationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BrandName already exists, please choose another.
         /// </summary>
         internal static string BrandNameExists {
             get {
                 return ResourceManager.GetString("BrandNameExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error updating the brand. Try again or contact the site administrator.
+        /// </summary>
+        internal static string BrandNameUpdateError {
+            get {
+                return ResourceManager.GetString("BrandNameUpdateError", resourceCulture);
             }
         }
     }
