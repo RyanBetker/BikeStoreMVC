@@ -2,13 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BikeStore.Extensions;
 
 namespace BikeStore.Controllers
 {
-    [Authorize]
+#if !DEBUG
+    [Authorize] 
+#endif
     public class BrandController : Controller
     {
         private BikeStoreCustomContext db = new BikeStoreCustomContext();
@@ -71,11 +75,22 @@ namespace BikeStore.Controllers
                         return RedirectToAction("Index");
                     }
                 }
+                catch(DbUpdateException ex)
+                {
+                    //TODO: Add Elmah error logging to log the ex.
+                    if (ex.IsUniqueConstraintViolation())
+                    {
+                        ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameExists);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Error creating the brand.");
+                    }
+                }
                 catch (Exception ex)
                 {
-                    //TODO: BUG: Needs unique constraint on brand and friendly message "BrandName already exists"
                     //TODO: Add Elmah error logging to log the ex.
-                    ModelState.AddModelError("BrandID", "Error creating the brand.");
+                    ModelState.AddModelError("", "Error creating the brand.");
                     return View();
                 }
             }
@@ -136,12 +151,25 @@ namespace BikeStore.Controllers
 
                     return RedirectToAction("Index");
                 }
+                catch (DbUpdateException ex)
+                {
+                    //TODO: Add Elmah error logging to log the ex.
+                    if (ex.IsUniqueConstraintViolation())
+                    {
+                        ModelState.AddModelError("", App_GlobalResources.ErrorMessages.BrandNameExists);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Error updating the brand.");
+                    }
+                    return View();
+                }
                 catch(Exception ex)
                 {
                     //TODO: BUG: Needs unique constraint on brand and friendly message "BrandName already exists"
 
                     //TODO: Add Elmah error logging to log the ex.
-                    ModelState.AddModelError("BrandID", "Error updating the brand.");
+                    ModelState.AddModelError("", "Error updating the brand.");
                     return View();
                 }
             }

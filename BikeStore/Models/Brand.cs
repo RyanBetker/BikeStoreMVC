@@ -13,6 +13,7 @@ namespace BikeStore.Models
         [Key]
         public int BrandID { get; set; }
         [Required, MaxLength(20)]
+        [Index(IsUnique=true)]
         public string BrandName { get; set; }
 
     }
