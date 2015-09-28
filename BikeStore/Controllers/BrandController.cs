@@ -10,9 +10,7 @@ using BikeStore.Extensions;
 
 namespace BikeStore.Controllers
 {
-#if !DEBUG
-    [Authorize] 
-#endif
+    [Authorize(Roles = "Administrators")]
     public class BrandController : Controller
     {
         private BikeStoreCustomContext db = new BikeStoreCustomContext();

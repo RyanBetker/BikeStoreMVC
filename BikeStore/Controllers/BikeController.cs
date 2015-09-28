@@ -15,16 +15,16 @@ using System.IO;
 
 namespace BikeStore.Controllers
 {
-#if !DEBUG
-    [Authorize] 
-#endif
+    [Authorize(Roles = "Administrators")]
     public class BikeController : Controller
     {
         private BikeStoreContext db = new BikeStoreContext();
         
+        [OverrideAuthorization]
         // GET: Bike
         public ActionResult Index()
         {
+            
             var bikesList = db.Bikes.Include(b => b.Brand).ToList();
             var destination = new List<BikeViewModel>();
             for (int i = 0; i < bikesList.Count; i++)
@@ -37,6 +37,7 @@ namespace BikeStore.Controllers
             return View(bikeViewModels);
         }
 
+        [OverrideAuthorization]
         // GET: Bike/Details/5
         public ActionResult Details(int? id)
         {
